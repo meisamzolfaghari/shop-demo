@@ -1,0 +1,15 @@
+package com.example.shopdemo.service;
+
+import com.example.shopdemo.entity.Category;
+import com.example.shopdemo.repository.CategoryRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CategoryService extends AbstractService<Category, CategoryRepository> {
+
+    protected CategoryService(CategoryRepository repository) {
+        super(repository);
+    }
+
+
+}
