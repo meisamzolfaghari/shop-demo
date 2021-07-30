@@ -13,7 +13,7 @@ public class ProductService extends AbstractService<Product, ProductRepository> 
         super(repository);
     }
 
-    public Optional<Object> findByName(String name) {
+    public Optional<Product> findByName(String name) {
         return repository.findByName(name);
     }
 

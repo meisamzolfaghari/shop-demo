@@ -3,7 +3,9 @@ package com.example.shopdemo.service;
 import com.example.shopdemo.entity.AbstractEntity;
 import com.example.shopdemo.repository.AbstractEntityRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
@@ -41,6 +43,11 @@ public abstract class AbstractService<T extends AbstractEntity, R extends Abstra
     }
 
     @Transactional(readOnly = true)
+    public Page<T> findAll(Specification<T> searchSpecification , PageRequest pageRequest) {
+        return repository.findAll(searchSpecification, pageRequest);
+    }
+
+    @Transactional(readOnly = true)
     public List<T> findAll() {
         return repository.findAll();
     }
@@ -71,5 +78,4 @@ public abstract class AbstractService<T extends AbstractEntity, R extends Abstra
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
-
 }

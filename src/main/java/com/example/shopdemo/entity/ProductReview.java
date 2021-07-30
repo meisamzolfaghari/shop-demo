@@ -14,7 +14,7 @@ import javax.persistence.*;
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true, exclude = "product")
 @Entity
-@Table(uniqueConstraints = {
+@Table(name = "product_reviews", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"product_id", "user_id"})})
 public class ProductReview extends AbstractEntity {
 
@@ -28,5 +28,9 @@ public class ProductReview extends AbstractEntity {
 
     @ManyToOne(optional = false)
     private User user;
+
+    public String getUserFullName() {
+        return user.getFullName();
+    }
 
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ProductRepository extends AbstractEntityRepository<Product> {
 
-    Optional<Object> findByName(String name);
+    Optional<Product> findByName(String name);
 
     @Override
     @Query("select p from Product p left join fetch p.reviews where p.id = :id")

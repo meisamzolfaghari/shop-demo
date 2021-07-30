@@ -3,6 +3,8 @@ package com.example.shopdemo.controller.api;
 import com.example.shopdemo.controller.dto.product.ProductAddDTO;
 import com.example.shopdemo.controller.dto.product.ProductFullDTO;
 import com.example.shopdemo.controller.dto.product.ProductLightDTO;
+import com.example.shopdemo.core.SearchCriteria;
+import com.example.shopdemo.core.SpecificationCreator;
 import com.example.shopdemo.entity.Category;
 import com.example.shopdemo.entity.Product;
 import com.example.shopdemo.service.CategoryService;
@@ -11,11 +13,14 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +32,17 @@ public class ProductController {
     private final ProductService productService;
 
     private final CategoryService categoryService;
+
+    @PostMapping("search")
+    public Page<ProductLightDTO> search(@RequestParam(defaultValue = "0", required = false) int start,
+                                        @RequestParam(defaultValue = "10", required = false) int size,
+                                        @RequestBody List<SearchCriteria> searchCriteriaList) {
+
+        Specification<Product> searchSpecification = SpecificationCreator.createFrom(searchCriteriaList);
+
+        return productService.findAll(searchSpecification, PageRequest.of(start, size))
+                .map(product -> modelMapper.map(product, ProductLightDTO.class));
+    }
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -56,6 +72,7 @@ public class ProductController {
 
         productService.delete(product);
     }
+
     @GetMapping
     public Page<ProductLightDTO> getAllProducts(@RequestParam(defaultValue = "0", required = false) int start,
                                                 @RequestParam(defaultValue = "10", required = false) int size) {

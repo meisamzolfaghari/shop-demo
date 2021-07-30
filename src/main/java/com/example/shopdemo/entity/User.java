@@ -1,6 +1,9 @@
 package com.example.shopdemo.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Formula;
 
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "users")
 public class User extends AbstractEntity {
 
     @Column(nullable = false, unique = true)
@@ -26,11 +30,12 @@ public class User extends AbstractEntity {
 
     private String lastName;
 
-    @Formula("concat(first_name,' ',last_name)")
+    @Formula("concat(firstName,' ',lastName)")
     private String fullName;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role")
+    @CollectionTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;

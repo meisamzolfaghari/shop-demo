@@ -40,7 +40,7 @@ public class ProductReviewController {
         ProductReview productReview = modelMapper.map(productAddReviewDTO, ProductReview.class);
         productReview.setUser(user);
 
-        product.getReviews().add(productReview);
+        product.addToReviews(productReview);
 
         productService.save(product);
 

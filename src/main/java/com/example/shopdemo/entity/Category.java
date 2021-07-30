@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +16,7 @@ import javax.persistence.Entity;
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "categories")
 public class Category extends AbstractEntity {
 
     @Column(nullable = false, unique = true)

@@ -17,6 +17,7 @@ import java.util.Set;
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "products")
 public class Product extends AbstractEntity {
 
     @Column(unique = true, nullable = false)
@@ -30,7 +31,11 @@ public class Product extends AbstractEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<ProductReview> reviews = new HashSet<>();
 
-    @Formula("(select avg(pr.rate) from product_review pr where pr.product_id = id)")
+    @Formula("(select avg(pr.rate) from product_reviews pr where pr.product_id = id)")
     private Double averageRate;
 
+    public void addToReviews(ProductReview productReview) {
+        productReview.setProduct(this);
+        reviews.add(productReview);
+    }
 }
