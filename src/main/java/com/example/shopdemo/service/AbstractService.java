@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractService<T extends AbstractEntity, R extends AbstractEntityRepository<T>> {
 
@@ -21,6 +22,11 @@ public abstract class AbstractService<T extends AbstractEntity, R extends Abstra
     @Transactional(readOnly = true)
     public List<T> findByIds(Iterable<Long> ids) {
         return repository.findAllById(ids);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<T> findById(Long id) {
+        return repository.findById(id);
     }
 
     @Transactional(readOnly = true)
@@ -41,13 +47,13 @@ public abstract class AbstractService<T extends AbstractEntity, R extends Abstra
 
     /***SAVE***/
     @Transactional
-    public T save(T entity) {
-        return repository.save(entity);
+    public void save(T entity) {
+        repository.save(entity);
     }
 
     @Transactional
-    public List<T> save(Iterable<T> iterable) {
-        return repository.saveAll(iterable);
+    public void save(Iterable<T> iterable) {
+        repository.saveAll(iterable);
     }
 
     /***DELETE***/
