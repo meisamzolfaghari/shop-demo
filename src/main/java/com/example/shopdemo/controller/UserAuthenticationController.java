@@ -1,13 +1,12 @@
 package com.example.shopdemo.controller;
 
+import com.example.shopdemo.config.CurrentUser;
 import com.example.shopdemo.controller.dto.user.UserProfileDTO;
 import com.example.shopdemo.controller.dto.user.UserRegisterDTO;
-import com.example.shopdemo.config.CurrentUser;
 import com.example.shopdemo.entity.Role;
 import com.example.shopdemo.entity.User;
 import com.example.shopdemo.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -31,16 +30,19 @@ public class UserAuthenticationController {
     @GetMapping("current-user")
     public UserProfileDTO getAllProducts(final Authentication authentication) {
 
-        User user = authentication == null ? null : ((CurrentUser) authentication.getPrincipal()).getUser();
+        User user = getExistingUser(authentication);
 
         return user == null ? null : modelMapper.map(user, UserProfileDTO.class);
+    }
+
+    private User getExistingUser(Authentication authentication) {
+        return authentication == null ? null : ((CurrentUser) authentication.getPrincipal()).getUser();
     }
 
     @PutMapping("register")
     @ResponseStatus(HttpStatus.OK)
     public void registerUser(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
 
-        validateEmailString(userRegisterDTO.getEmail());
         validateUserNotExistByUserName(userRegisterDTO.getEmail());
 
         User user = modelMapper.map(userRegisterDTO, User.class);
@@ -48,12 +50,6 @@ public class UserAuthenticationController {
         user.setRoles(Set.of(Role.USER));
 
         userService.save(user);
-    }
-
-    private void validateEmailString(String email) {
-        if (!EmailValidator.getInstance().isValid(email))
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    String.format("email: %s does not have a valid pattern!", email));
     }
 
     private void validateUserNotExistByUserName(String email) {

@@ -16,7 +16,7 @@ public class ProductAddDTO {
     private String name;
 
     @NotNull(message = "price must be provided!")
-    private Long price;
+    private Double price;
 
     @NotNull(message = "category id must be provided!")
     private Long categoryId;

@@ -22,6 +22,28 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("block/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserFullDTO blockUser(@PathVariable("id") Long id) {
+
+        User user = getUserById(id);
+
+        userService.blockUser(user);
+
+        return modelMapper.map(user, UserFullDTO.class);
+    }
+
+    @GetMapping("unblock/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserFullDTO unblockUser(@PathVariable("id") Long id) {
+
+        User user = getUserById(id);
+
+        userService.unblockUser(user);
+
+        return modelMapper.map(user, UserFullDTO.class);
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Page<UserLightDTO> getAllUsers(@RequestParam(defaultValue = "0", required = false) int start,

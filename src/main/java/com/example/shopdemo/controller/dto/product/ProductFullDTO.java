@@ -1,9 +1,12 @@
 package com.example.shopdemo.controller.dto.product;
 
 import com.example.shopdemo.controller.dto.category.CategoryFullDTO;
+import com.example.shopdemo.controller.dto.product.review.ProductReviewFullDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -14,8 +17,12 @@ public class ProductFullDTO {
 
     private String name;
 
-    private long price;
+    private double price;
+
+    private Double averageRate;
 
     private CategoryFullDTO category;
+
+    private Set<ProductReviewFullDTO> reviews;
 
 }

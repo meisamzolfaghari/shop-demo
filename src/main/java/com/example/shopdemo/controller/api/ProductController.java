@@ -52,13 +52,11 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(@PathVariable("id") Long id) {
 
-        Product product = getProductById(id);
+        Product product = getValidatedProductById(id);
 
         productService.delete(product);
     }
-
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public Page<ProductLightDTO> getAllProducts(@RequestParam(defaultValue = "0", required = false) int start,
                                                 @RequestParam(defaultValue = "10", required = false) int size) {
         return productService.findAll(PageRequest.of(start, size))
@@ -66,10 +64,9 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ProductFullDTO getProduct(@PathVariable("id") Long id) {
 
-        Product product = getProductById(id);
+        Product product = getValidatedProductById(id);
 
         return modelMapper.map(product, ProductFullDTO.class);
     }
@@ -86,7 +83,7 @@ public class ProductController {
                         String.format("category with id: %s was not found!", id)));
     }
 
-    private Product getProductById(Long id) {
+    private Product getValidatedProductById(Long id) {
         return productService.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         String.format("product with id: %s was not found!", id)));

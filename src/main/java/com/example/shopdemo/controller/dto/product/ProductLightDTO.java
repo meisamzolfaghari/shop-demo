@@ -13,6 +13,8 @@ public class ProductLightDTO {
 
     private String name;
 
-    private long price;
+    private Double price;
+
+    private Double averageRate;
 
 }

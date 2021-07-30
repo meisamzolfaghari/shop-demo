@@ -20,4 +20,6 @@ public class UserFullDTO {
 
     private Set<Role> roles;
 
+    private boolean blocked;
+
 }
