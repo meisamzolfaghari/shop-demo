@@ -1,4 +1,4 @@
-package com.example.shopdemo.controller;
+package com.example.shopdemo.controller.api;
 
 import com.example.shopdemo.controller.dto.category.CategoryAddDTO;
 import com.example.shopdemo.controller.dto.category.CategoryFullDTO;
@@ -7,7 +7,7 @@ import com.example.shopdemo.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +20,15 @@ import javax.validation.Valid;
 @RequestMapping("api/category")
 public class CategoryController {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public CategoryFullDTO addCategory(@Valid CategoryAddDTO categoryAddDTO) {
+    public CategoryFullDTO addCategory(@Valid @RequestBody CategoryAddDTO categoryAddDTO) {
 
-        validateCategoryNameNotExist(categoryAddDTO);
+        validateCategoryNameNotExist(categoryAddDTO.getName());
 
         Category category = modelMapper.map(categoryAddDTO, Category.class);
 
@@ -49,8 +49,9 @@ public class CategoryController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Page<CategoryFullDTO> getAllCategories(Pageable pageable) {
-        return categoryService.findAll(pageable)
+    public Page<CategoryFullDTO> getAllCategories(@RequestParam(defaultValue = "0", required = false) int start,
+                                                  @RequestParam(defaultValue = "10", required = false) int size) {
+        return categoryService.findAll(PageRequest.of(start, size))
                 .map(category -> modelMapper.map(category, CategoryFullDTO.class));
     }
 
@@ -63,15 +64,16 @@ public class CategoryController {
         return modelMapper.map(category, CategoryFullDTO.class);
     }
 
-    private void validateCategoryNameNotExist(CategoryAddDTO categoryAddDTO) {
-        if (categoryService.findByName(categoryAddDTO.getName()).isPresent())
+    private void validateCategoryNameNotExist(String name) {
+        if (categoryService.findByName(name).isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "category with name: {}" + categoryAddDTO.getName() + " already exists!");
+                    String.format("category with name: %s already exists!", name));
     }
 
     private Category getCategoryById(Long id) {
         return categoryService.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "category with id: {}" + id + " was not found!"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("category with id: %s was not found!", id)));
     }
 
 }

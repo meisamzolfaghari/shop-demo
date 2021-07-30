@@ -32,7 +32,7 @@ public abstract class AbstractService<T extends AbstractEntity, R extends Abstra
     @Transactional(readOnly = true)
     public T getById(Long id) {
         return repository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("couldn't find " + getClass().getName() + " with id:" + id));
+                new EntityNotFoundException(String.format("couldn't find %s with id: %s", getClass().getName(), id)));
     }
 
     @Transactional(readOnly = true)

@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Data
@@ -23,8 +24,7 @@ public class Product extends AbstractEntity {
 
     private long price;
 
-    @ManyToOne(optional = false)
-    @Column(nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Category category;
 
 }

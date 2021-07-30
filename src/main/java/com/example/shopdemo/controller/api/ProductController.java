@@ -1,4 +1,4 @@
-package com.example.shopdemo.controller;
+package com.example.shopdemo.controller.api;
 
 import com.example.shopdemo.controller.dto.product.ProductAddDTO;
 import com.example.shopdemo.controller.dto.product.ProductFullDTO;
@@ -7,27 +7,30 @@ import com.example.shopdemo.entity.Category;
 import com.example.shopdemo.entity.Product;
 import com.example.shopdemo.service.CategoryService;
 import com.example.shopdemo.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/product")
 public class ProductController {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    private ProductService productService;
+    private final ProductService productService;
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ProductFullDTO addProduct(ProductAddDTO productAddDTO) {
+    public ProductFullDTO addProduct(@Validated @RequestBody ProductAddDTO productAddDTO) {
 
         validateProductNameNotExist(productAddDTO.getName());
 
@@ -56,8 +59,9 @@ public class ProductController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Page<ProductLightDTO> getAllProducts(Pageable pageable) {
-        return productService.findAll(pageable)
+    public Page<ProductLightDTO> getAllProducts(@RequestParam(defaultValue = "0", required = false) int start,
+                                                @RequestParam(defaultValue = "10", required = false) int size) {
+        return productService.findAll(PageRequest.of(start, size))
                 .map(product -> modelMapper.map(product, ProductLightDTO.class));
     }
 
@@ -73,17 +77,19 @@ public class ProductController {
     private void validateProductNameNotExist(String name) {
         if (productService.findByName(name).isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "product with name: {}" + name + " already exists!");
+                    String.format("product with name: %s already exists!", name));
     }
 
     private Category getCategoryById(Long id) {
         return categoryService.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "category with id: {}" + id + " was not found!"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("category with id: %s was not found!", id)));
     }
 
     private Product getProductById(Long id) {
         return productService.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "product with id: {}" + id + " was not found!"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("product with id: %s was not found!", id)));
     }
 
 }
