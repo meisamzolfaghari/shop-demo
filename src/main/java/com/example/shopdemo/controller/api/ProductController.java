@@ -9,6 +9,7 @@ import com.example.shopdemo.entity.Category;
 import com.example.shopdemo.entity.Product;
 import com.example.shopdemo.service.CategoryService;
 import com.example.shopdemo.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ public class ProductController {
 
     private final CategoryService categoryService;
 
+    @Operation(description = "example of request body: [ { \"key: \"name\", \"operation\": \"like\", \"value\": \"shoe\" }, { \"key\": \"price\", \"operation\": \"le\", \"value\": \"3.5\" }, { \"key\": \"averageRate\", \"operation\": \"ge\", \"value\": \"3\" } ]")
     @PostMapping("search")
     public Page<ProductLightDTO> search(@RequestParam(defaultValue = "0", required = false) int start,
                                         @RequestParam(defaultValue = "10", required = false) int size,
