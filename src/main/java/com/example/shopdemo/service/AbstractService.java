@@ -64,17 +64,17 @@ public abstract class AbstractService<T extends AbstractEntity, R extends Abstra
     }
 
     /***DELETE***/
-    @Transactional(rollbackFor = {Throwable.class})
+    @Transactional
     public void delete(T entity) {
         repository.delete(entity);
     }
 
-    @Transactional(rollbackFor = {Throwable.class})
+    @Transactional
     public void delete(Iterable<T> iterable) {
         repository.deleteAll(iterable);
     }
 
-    @Transactional(rollbackFor = {Throwable.class})
+    @Transactional
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
