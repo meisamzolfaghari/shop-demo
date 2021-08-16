@@ -48,7 +48,6 @@ public class User extends AbstractEntity {
         return "User{" +
                 "id=" + getId() +
                 ", email='" + getEmail() +
-                ", passwordHash='" + getPasswordHash() +
                 ", roles=" + getRoles() +
                 '}';
     }
