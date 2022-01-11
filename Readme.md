@@ -6,6 +6,6 @@
     Then run th init_database.sql
 
     Then go to url "localhost:8080" and Click on "OpenAPI UI"
-        where you can see all apis.
+        where you can see all APIs.
 
     admin username: zsmeisam@gmail.com - pass: 123
