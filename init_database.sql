@@ -1,4 +1,4 @@
-
+use shop_demo;
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
