@@ -19,8 +19,6 @@ public class ProductFullDTO {
 
     private double price;
 
-    private Double averageRate;
-
     private CategoryFullDTO category;
 
     private Set<ProductReviewFullDTO> reviews;

@@ -15,6 +15,4 @@ public class ProductLightDTO {
 
     private Double price;
 
-    private Double averageRate;
-
 }

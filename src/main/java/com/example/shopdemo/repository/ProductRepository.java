@@ -10,7 +10,6 @@ public interface ProductRepository extends AbstractEntityRepository<Product> {
 
     Optional<Product> findByName(String name);
 
-    @Override
     @Query("select p from Product p left join fetch p.reviews where p.id = :id")
-    Optional<Product> findById(@Param("id") Long id);
+    Optional<Product> findByIdWithFilledView(@Param("id") Long id);
 }

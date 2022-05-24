@@ -60,7 +60,7 @@ public class ProductReviewController {
     }
 
     private Product getValidatedProductById(Long id) {
-        return productService.findById(id).orElseThrow(() ->
+        return productService.findByIdWithFilledView(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         String.format("product with id: %s was not found!", id)));
     }
